@@ -232,7 +232,20 @@ void D3DApp::OnResize()
 	mScreenViewport.MinDepth = 0.0f;
 	mScreenViewport.MaxDepth = 1.0f;
 
+	//6.13 - Question 12 - BEGIN
+	//mScreenViewport.TopLeftX = 0;
+	//mScreenViewport.TopLeftY = static_cast<float>(mClientHeight / 2);
+	//mScreenViewport.Width = static_cast<float>(mClientWidth/2);
+	//mScreenViewport.Height = static_cast<float>(mClientHeight/2);
+	//mScreenViewport.MinDepth = 0.0f;
+	//mScreenViewport.MaxDepth = 1.0f;
+	//6.13 - Question 12 - END
+
     mScissorRect = { 0, 0, mClientWidth, mClientHeight };
+
+	//6.13 - Question 13 - BEGIN
+	//mScissorRect = { mClientWidth/4, mClientHeight/4, mClientWidth/4 + mClientWidth/2 , mClientHeight/4 + mClientHeight/2 };
+	//6.13 - Question 13 - END
 }
  
 LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

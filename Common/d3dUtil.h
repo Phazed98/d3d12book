@@ -166,12 +166,29 @@ struct MeshGeometry
 	// It is up to the client to cast appropriately.  
 	Microsoft::WRL::ComPtr<ID3DBlob> VertexBufferCPU = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> IndexBufferCPU  = nullptr;
-
+	
 	Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferGPU = nullptr;
-
+	
 	Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferUploader = nullptr;
+
+	//6.13 - Question 2 - BEGIN
+	Microsoft::WRL::ComPtr<ID3DBlob> POSVertexBufferCPU = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> POSVertexBufferGPU = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> POSVertexBufferUploader = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3DBlob> COLVertexBufferCPU = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> COLVertexBufferGPU = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> COLVertexBufferUploader = nullptr;
+
+	UINT POSVertexByteStride = 0;
+	UINT POSVertexBufferByteSize = 0;
+
+	UINT COLVertexByteStride = 0;
+	UINT COLVertexBufferByteSize = 0;
+	//6.13 - Question 2 - END
+
 
     // Data about the buffers.
 	UINT VertexByteStride = 0;
@@ -190,7 +207,7 @@ struct MeshGeometry
 		vbv.BufferLocation = VertexBufferGPU->GetGPUVirtualAddress();
 		vbv.StrideInBytes = VertexByteStride;
 		vbv.SizeInBytes = VertexBufferByteSize;
-
+	
 		return vbv;
 	}
 
@@ -204,10 +221,32 @@ struct MeshGeometry
 		return ibv;
 	}
 
+	//6.13 - Question 2 - BEGIN
+	D3D12_VERTEX_BUFFER_VIEW POSVertexBufferView()const
+	{
+		D3D12_VERTEX_BUFFER_VIEW vbv;
+		vbv.BufferLocation = POSVertexBufferGPU->GetGPUVirtualAddress();
+		vbv.StrideInBytes = POSVertexByteStride;
+		vbv.SizeInBytes = POSVertexBufferByteSize;
+
+		return vbv;
+	}
+	D3D12_VERTEX_BUFFER_VIEW COLVertexBufferView()const
+	{
+		D3D12_VERTEX_BUFFER_VIEW vbv;
+		vbv.BufferLocation = COLVertexBufferGPU->GetGPUVirtualAddress();
+		vbv.StrideInBytes = COLVertexByteStride;
+		vbv.SizeInBytes = COLVertexBufferByteSize;
+
+		return vbv;
+	}
+	//6.13 - Question 2 - END
+
+
 	// We can free this memory after we finish upload to the GPU.
 	void DisposeUploaders()
 	{
-		VertexBufferUploader = nullptr;
+		//VertexBufferUploader = nullptr;
 		IndexBufferUploader = nullptr;
 	}
 };

@@ -4,6 +4,8 @@
 
 #include "GeometryGenerator.h"
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 
 using namespace DirectX;
 
@@ -654,4 +656,64 @@ GeometryGenerator::MeshData GeometryGenerator::CreateQuad(float x, float y, floa
 	meshData.Indices32[5] = 3;
 
     return meshData;
+}
+
+
+GeometryGenerator::MeshData GeometryGenerator::LoadFromFile(std::string Filename)
+{
+	MeshData meshData;
+
+	int vertexCount = 0;
+	int indexCount = 0;
+
+	std::string ignore;
+	std::string line;
+	std::ifstream myfile(Filename);
+	if (myfile.is_open())
+	{
+		myfile >> ignore >> vertexCount;
+		myfile >> ignore >> indexCount;
+		myfile >> ignore >> ignore >> ignore >> ignore;
+
+		float nx, ny, nz;
+		XMFLOAT4 black(0.0f, 0.0f, 0.0f, 1.0f);
+
+		std::vector<Vertex> vertices(vertexCount);
+		for (uint32 i = 0; i < vertexCount; ++i)
+		{
+			myfile >> vertices[i].Position.x >> vertices[i].Position.y >> vertices[i].Position.z;
+			myfile >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;
+		}
+
+		myfile >> ignore;
+		myfile >> ignore;
+		myfile >> ignore;
+
+		uint32 IndexGroupCount = 3 * indexCount;
+		std::vector<uint32> indices(IndexGroupCount);
+		for (uint32 i = 0; i < indexCount; ++i)
+		{
+			uint32 Index0 = 0;
+			uint32 Index1 = 0;
+			uint32 Index2 = 0;
+
+			myfile >> Index0 >> Index1 >> Index2;
+
+			indices[i * 3 + 0] = Index0;
+			indices[i * 3 + 1] = Index1;
+			indices[i * 3 + 2] = Index2;
+
+			//myfile >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];
+		}
+
+		myfile.close();
+
+		meshData.Vertices.resize(vertexCount);
+		meshData.Indices32.resize(IndexGroupCount);
+
+		meshData.Vertices.assign(&vertices[0], &vertices[vertexCount - 1]);
+		meshData.Indices32.assign(&indices[0], &indices[IndexGroupCount - 1]);
+	}
+
+	return meshData;
 }

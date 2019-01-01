@@ -459,8 +459,11 @@ void LitWavesApp::UpdateMainPassCB(const GameTimer& gt)
 
 	XMVECTOR lightDir = -MathHelper::SphericalToCartesian(1.0f, mSunTheta, mSunPhi);
 
+	//8.16 - Question 1 - BEGIN
 	XMStoreFloat3(&mMainPassCB.Lights[0].Direction, lightDir);
-	mMainPassCB.Lights[0].Strength = { 1.0f, 1.0f, 0.9f };
+	float Mult = sinf(gt.TotalTime());
+	mMainPassCB.Lights[0].Strength = { 1.0f * Mult, 0.5f * Mult, 0.5f * Mult };
+	//8.16 - Question 1 - END
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
 	currPassCB->CopyData(0, mMainPassCB);
@@ -706,6 +709,11 @@ void LitWavesApp::BuildMaterials()
     grass->DiffuseAlbedo = XMFLOAT4(0.2f, 0.6f, 0.2f, 1.0f);
     grass->FresnelR0 = XMFLOAT3(0.01f, 0.01f, 0.01f);
     grass->Roughness = 0.125f;
+
+
+	//8.16 - Question 2 - BEGIN
+	grass->Roughness = 0.8f;
+	//8.16 - Question 2 - END
 
     // This is not a good water material definition, but we do not have all the rendering
     // tools we need (transparency, environment reflection), so we fake it for now.
